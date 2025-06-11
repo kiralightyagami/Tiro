@@ -1,5 +1,6 @@
 import { auth } from '@clerk/nextjs/server'
 import prisma from '@/app/prisma/prisma/db'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const { userId, redirectToSignIn, sessionClaims } = await auth()
@@ -8,12 +9,17 @@ export default async function Page() {
 
   
   const email = sessionClaims?.email as string
+  const name = sessionClaims?.full_name as string
+  const profilePicture = sessionClaims?.picture as string
 
   if (email) {
    
     await prisma.user.upsert({
       where: { email },
-      update: {},
+      update: {
+        name,
+        profilePicture
+      },
       create: {
         email,
         id: userId,
@@ -34,6 +40,5 @@ export default async function Page() {
       }
     })
   }
-
-  return {userId}
+  return redirect('/dashboard')
 }
