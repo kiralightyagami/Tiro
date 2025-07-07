@@ -15,7 +15,9 @@ export default function Hero() {
             <div className="flex justify-center pt-2">
                 {isSignedIn ? (
                     <button 
-                        onClick={() => window.location.href = '/dashboard'}
+                        onClick={() => {
+                            window.location.href = '/dashboard'
+                        }}
                         className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center gap-2"
                     >
                         Go to Dashboard

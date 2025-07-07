@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import {
     SignInButton,
     SignOutButton,
@@ -10,7 +10,8 @@ import {
 
 export default function Appbar() {
     return (
-        <div className="border-b px-4 py-3 flex justify-between items-center bg-white">
+        
+            <div className="border-b px-4 py-3 flex justify-between items-center bg-white">
             <div className='text-xl font-bold'>
                 TIRO
             </div>
@@ -39,5 +40,6 @@ export default function Appbar() {
                 </SignedIn>
             </div>
         </div>
-    )
+
+        )
 }

@@ -1,33 +1,32 @@
-import { auth, currentUser } from '@clerk/nextjs/server'
-import { redirect } from 'next/navigation'
+import { auth } from '@clerk/nextjs/server'
+import ProfileCard from '@/app/components/ProfileCard'
+import prisma from '@/app/prisma/prisma/db'
 
-
-export default async function Page() {    
-    const user = await currentUser()
+async function getUserWallet() {
     const { userId, redirectToSignIn } = await auth()
 
     if (!userId) return redirectToSignIn()
-  
-    if (!user) {
-        return redirectToSignIn()
-    }
+
+    const userWallet = await prisma.cryptoWallet.findFirst({
+        where: {
+            userId: userId
+        }
+    })
 
 
-    return (
-        <div className= "pt-8 flex justify-center">
-            <div className="max-w-4xl bg-white rounded-lg w-full shadow-md p-12">
-               <Greeting image={user?.imageUrl || ''} name={user?.fullName || ''} />
-            </div>
-           
-        </div>
-    )
+    return {userWallet, error: null}
 }
 
-function Greeting({ image, name }: { image: string, name: string }) {
-    return (
-        <div className="flex items-center gap-4">
-            <img src={image} alt="User" className="w-12 h-12 rounded-full" />
-            <div className="text-2xl font-medium">Welcome, {name}</div>
+export default async function() {  
+    const userWallet = await getUserWallet()
+
+    if (!userWallet || !userWallet.userWallet?.publicKey) {
+        return <div>No wallet found</div>
+    }
+
+    return(
+        <div>
+            <ProfileCard publicKey={userWallet.userWallet?.publicKey}/>
         </div>
     )
 }
